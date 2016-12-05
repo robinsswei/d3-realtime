@@ -1,0 +1,26 @@
+{
+  "name": "d3-realtime",
+  "version": "1.0.0",
+  "description": "A workspace for D3 realtime project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robinsswei/d3-realtime.git"
+  },
+  "keywords": [
+    "d3",
+    "force-layout",
+    "treemap",
+    "real-time",
+    "data"
+  ],
+  "author": "Robinsswei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robinsswei/d3-realtime/issues"
+  },
+  "homepage": "https://github.com/robinsswei/d3-realtime#readme"
+}

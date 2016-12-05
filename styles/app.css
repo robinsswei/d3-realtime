@@ -1,0 +1,13 @@
+button {
+  font-size: 1em;
+  font-family: Futura, Gill Sans, Helvetica, sans-serif;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #ccc;
+}
+
+#graph {
+  width: 800px;
+  height: 600px;
+  padding: 10px;
+}
