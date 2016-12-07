@@ -2,4 +2,4 @@
 D3 with realtime data
 
 # Python Simply Server
-python -m SimpleHTTPServer 8000
+python -m SimpleHTTPServer 1234

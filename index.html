@@ -1,18 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>D3 Realtime</title>
-  <link rel="stylesheet" type="text/css" href="styles/app.css">
+  <title>Autoscaler</title>
+  <!-- Loader -->
+  <script type="text/javascript" src="js/libs/pace.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="assets/styles/loader-bar.css">
 
-  <script type="text/javascript" href="js/libs/jquery.min.js"></script>
-  <!-- <script type="text/javascript" href="js/libs/underscore-min.js"></script> -->
-  <script type="text/javascript" href="js/libs/d3.v3.min.js"></script>
+  <!-- Libraries -->
+  <script type="text/javascript" src="js/libs/jquery.min.js"></script>
+  <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/libs/underscore-min.js"></script>
+  <script type="text/javascript" src="js/libs/d3.v3.min.js"></script>
+
+  <!-- Main Styles -->
+  <link rel="stylesheet" type="text/css" href="assets/styles/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/styles/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/styles/app.css">
+
 </head>
 <body>
-  <button id="addNode">+ Add node</button>
-  <div id="graph"></div>
+  <nav role="navigation" class="navbar navbar-inverse">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand">Mosaixsoft</a>
+    </div>
+    <!-- Collection of nav links, forms, and other content for toggling -->
+    <div id="navbarCollapse" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Home</a></li>
+          <li class="dropdown">
+              <a data-toggle="dropdown" class="dropdown-toggle" href="#">Navigation<b class="caret"></b></a>
+              <div class="dropdown-menu multi-column">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><div><i class="fa fa-cloud fa-5x" aria-hidden="true"></i></div>Cloud Graph</a></li>
+                            <li><a href="#"><div><i class="fa fa-sitemap fa-5x" aria-hidden="true"></i></div>Autoscaler</a></li>
+                            <li><a href="#"><div><i class="fa fa-tv fa-5x" aria-hidden="true"></i></div>Monitoring</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><div><i class="fa fa-thermometer-2 fa-5x" aria-hidden="true"></i></div>Heatmap</a></li>
+                            <li><a href="#"><div><i class="fa fa-share-alt fa-5x" aria-hidden="true"></i></div>Connectivity</a></li>
+                            <li><a href="#"><div><i class="fa fa-terminal fa-5x" aria-hidden="true"></i></div>Command Line Interface</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><div><i class="fa fa-gamepad fa-5x" aria-hidden="true"></i></div>Service Controller</a></li>
+                            <li><a href="#"><div><i class="fa fa-send fa-5x" aria-hidden="true"></i></div>Workload Dispatcher</a></li>
+                            <li><a href="#"><div><i class="fa fa-cubes fa-5x" aria-hidden="true"></i></div>Software Versions</a></li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+          </li>
+          <li class="dropdown">
+          <a href="#" id="profile" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Profile <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#" id="username_field"></a></li>
+            <li><a href="#" onclick="copyToClipboard(document.getElementById('authToken_field').class)" id="authToken_field"></a></li>
+            <li><a href="#" id="changePass">Change Password</a></li>
+          </ul>
+        </li>
+          <li><a href="#">Logout</a></li>
+        </ul>
 
-  <script type="text/javascript" href="js/Graph.js"></script>
-  <script type="text/javascript" href="js/index.js"></script>
+        <form role="search" class="navbar-form navbar-right">
+            <div class="form-group">
+                <input type="text" placeholder="Search" class="form-control">
+            </div>
+        </form>
+    </div>
+  </nav>
+  <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">Graph</div>
+            <div class="panel-body">
+              <div id="graph"></div>
+            </div>
+            <div class="panel-footer">
+              <button id="addNode">Add node</button>
+              <button id="removeNode">Remove node</button>
+              <button id="refreshGraph">Refresh Graph</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">Chart</div>
+            <div class="panel-body">
+              <div id="chart"></div>
+            </div>
+            <div class="panel-footer">
+              Refresh every 10 second
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">Heatmap</div>
+            <div class="panel-body">
+              <div id="heatmap"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <!-- <script type="text/javascript" href="js/Graph.js"></script> -->
+  <script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>
