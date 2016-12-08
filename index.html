@@ -8,11 +8,13 @@
 
   <!-- Libraries -->
   <script type="text/javascript" src="js/libs/jquery.min.js"></script>
+  <script type="text/javascript" src="js/libs/jquery-ui.min.js"></script>
   <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/libs/underscore-min.js"></script>
   <script type="text/javascript" src="js/libs/d3.v3.min.js"></script>
 
   <!-- Main Styles -->
+  <link rel="stylesheet" type="text/css" href="assets/styles/jquery-ui.css">
   <link rel="stylesheet" type="text/css" href="assets/styles/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="assets/styles/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="assets/styles/app.css">
@@ -81,17 +83,21 @@
         </form>
     </div>
   </nav>
-  <div class="container">
+  <div class="container" id="wrapper">
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">Graph</div>
             <div class="panel-body">
+              <div class="ui-widget">
+                  <input id="search">
+                  <button id="searchBtn">Search</button>
+              </div>
               <div id="graph"></div>
             </div>
             <div class="panel-footer">
               <button id="clearBtn">Clear Graph</button>
-              <button id="updateBtn">Update Data</button>
+              <button id="updateBtn">Add a node</button>
               <button id="refreshGraph">Refresh Graph</button>
             </div>
           </div>
@@ -120,7 +126,7 @@
       </div>
   </div>
 
-  <!-- <script type="text/javascript" href="js/Graph.js"></script> -->
   <script type="text/javascript" src="js/index.js"></script>
+
 </body>
 </html>

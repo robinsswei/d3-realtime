@@ -1,3 +1,22 @@
+#wrapper {
+  opacity: 0;
+}
+
+#wrapper {
+  -webkit-transform: opacity 0.5s ease;
+  -moz-transform: opacity 0.5s ease;
+  -o-transform: opacity 0.5s ease;
+  -ms-transform: opacity 0.5s ease;
+  transform: opacity 0.5s ease;
+}
+
+body.pace-running #wrapper {
+    opacity: 0;
+}
+body.pace-done #wrapper {
+    opacity: 1;
+}
+
 .pace {
   -webkit-pointer-events: none;
   pointer-events: none;

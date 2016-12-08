@@ -3,19 +3,23 @@ var graphData = {
   nodes:[
     {id: "n1", name: "Cause"},
     {id: "n2", name: "Effect"},
-    {id: "n3", name: "Robin"}
+    {id: "n3", name: "Robin"},
+    {id: "n4", name: "Robert"},
+    {id: "n5", name: "Rose"}
   ],
   links:[
     {source: "n1", target:"n2", id: "e1"},
     {source: "n1", target:"n3", id: "e2"},
     {source: "n2", target:"n3", id: "e3"},
+    {source: "n3", target:"n4", id: "e4"},
+    {source: "n4", target:"n5", id: "e5"},
   ]
 }
 
 var testData = {
   nodes:[
-    {id: "n1", name: "Cause"},
-    {id: "n2", name: "Effect"},
+    {id: "n1", name: "Book"},
+    {id: "n2", name: "Blue"},
     {id: "n3", name: "Blueberry"},
     {id: "n4", name: "Apple"},
     {id: "n5", name: "Banana"},
@@ -30,7 +34,10 @@ var testData = {
 }
 
 $(function(){
-  var graph;
+  //variables
+  var graph
+  var optArray = []
+
   function myGraph(el) {
     this.init = function (data) {
       if(data !== undefined){
@@ -179,14 +186,17 @@ $(function(){
                     return d.id;
                 })
                 .attr("class", "nodeStrokeClass")
-                .attr("fill", function(d) { return color(20); });
+                .attr("fill", function(d) { return color(10); })
+                // .style("fill", function (d) {
+                //     return color(d.type)
+                // })
 
         nodeEnter.append("svg:text")
                 .attr("class", "textClass")
                 .attr("x", 14)
                 .attr("y", ".31em")
                 .text(function (d) {
-                    return d.id;
+                  return d.name? d.name : d.id
                 });
 
         node.exit().transition("r", 0).remove();
@@ -227,11 +237,20 @@ $(function(){
   function drawGraph(data) {
     graph = window.graph = new myGraph("#graph")
     graph.init(data)
+    optArray = data.nodes.map(function(node){
+      return node.name
+    }).sort()
 
     keepNodesOnTop()
   }
 
   drawGraph(graphData)
+
+  // for (var i = 0; i < graphData.nodes.length; i++) {
+  //     optArray.push(graphData.nodes[i].name)
+  // }
+
+  // optArray = optArray.sort()
 
   // because of the way the network is created, nodes are created first, and links second,
   // so the lines were on top of the nodes, this just reorders the DOM to put the svg:g on top
@@ -247,7 +266,6 @@ $(function(){
     drawGraph()
   }
 
-  var toggle = true
   // Button Event Listener
   $("#clearBtn").on("click", function(event){
     event.preventDefault()
@@ -268,6 +286,7 @@ $(function(){
     keepNodesOnTop()
   })
 
+  var toggle = true
   $("#refreshGraph").on("click", function(event){
     event.preventDefault()
     console.log("refresh graph")
@@ -280,7 +299,36 @@ $(function(){
       drawGraph(testData)
       toggle = true
     }
-
     keepNodesOnTop()
+    $("#search").autocomplete({
+      source: optArray
+    })
   })
+  
+  $("#search").autocomplete({
+    source: optArray
+  })
+
+  $("#searchBtn").on('click', searchNode)
+
+  function searchNode() {
+    //find the node
+    var selectedVal = document.getElementById('search').value
+    var svg = d3.select("#graph svg")
+    var node =svg.selectAll(".node");
+
+    if (selectedVal == "none") {
+        node.style("stroke", "white").style("stroke-width", "1");
+    } else {
+        var selected = node.filter(function (d, i) {
+            return d.name != selectedVal;
+        });
+        selected.style("opacity", "0");
+        var link = svg.selectAll(".link")
+        link.style("opacity", "0");
+        svg.selectAll(".node, .link").transition()
+            .duration(5000)
+            .style("opacity", 1);
+    }
+  }
 })

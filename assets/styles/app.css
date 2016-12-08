@@ -1,4 +1,4 @@
-body > :not(.pace),body:before,body:after {
+/*body > :not(.pace),body:before,body:after {
   -webkit-transition:opacity .4s ease-in-out;
   -moz-transition:opacity .4s ease-in-out;
   -o-transition:opacity .4s ease-in-out;
@@ -7,8 +7,8 @@ body > :not(.pace),body:before,body:after {
 }
 
 body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
-  opacity:0;
-}
+  opacity:0
+}*/
 
 .dropdown-menu.multi-column {
   width: 600px;
