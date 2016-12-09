@@ -1,135 +1,106 @@
-// main entry of the application
-var graphData = {
-  nodes:[
-    {id: "n1", name: "Cause"},
-    {id: "n2", name: "Effect"},
-    {id: "n3", name: "Robin"},
-    {id: "n4", name: "Robert"},
-    {id: "n5", name: "Rose"}
-  ],
-  links:[
-    {source: "n1", target:"n2", id: "e1"},
-    {source: "n1", target:"n3", id: "e2"},
-    {source: "n2", target:"n3", id: "e3"},
-    {source: "n3", target:"n4", id: "e4"},
-    {source: "n4", target:"n5", id: "e5"},
-  ]
-}
+var data = window.data = {
+      "id":"root",
+      "name": "APP_GROUP",
+      "children":[
+        {
+          "id": "a1",
+          "name": "asgGroup1",
+          "children": [
+              {   
+                "id": "c1",
+                "name": "container1"
+              },
+              {
+                "id": "c2",
+                "name": "container2"
+              },
+              {   
+                "id": "c3",
+                "name": "container3"
+              },
+              {
+                "id": "c4",
+                "name": "container4"
+              }
+          ]
+        },
+        {
+          "id": "a2",
+          "name": "asgGroup2",
+          "children": [
+              {   
+                "id": "c5",
+                "name": "container5"
+              },
+              {
+                "id": "c6",
+                "name": "container6"
+              },
+              {   
+                "id": "c7",
+                "name": "container7"
+              },
+              {
+                "id": "c8",
+                "name": "container8"
+              },
+              {   
+                "id": "c9",
+                "name": "container9"
+              },
+              {
+                "id": "c10",
+                "name": "container10"
+              }
+          ]
+        },
+        {
+          "id": "a3",
+          "name": "asgGroup3",
+          "children": [
+              {   
+                "id": "lb1",
+                "name": "loadBalancer1",
+                "type": "LB"
+              },
+              {
+                "id": "lb2",
+                "name": "loadBalancer2",
+                "type": "LB"
+              }
+          ]
+        },
+        {
+          "id": "a4",
+          "name": "asgGroup4",
+          "children": [
+              {   
+                "id": "lb3",
+                "name": "loadBalancer3",
+                "type": "LB"
+              },
+              {
+                "id": "lb4",
+                "name": "loadBalancer4",
+                "type": "LB"
+              }
+          ]
+        }
+      ]
+    }
 
-var testData = {
-  nodes:[
-    {id: "n1", name: "Book"},
-    {id: "n2", name: "Blue"},
-    {id: "n3", name: "Blueberry"},
-    {id: "n4", name: "Apple"},
-    {id: "n5", name: "Banana"},
-  ],
-  links:[
-    {source: "n1", target:"n2", id: "e1"},
-    {source: "n1", target:"n3", id: "e2"},
-    {source: "n2", target:"n3", id: "e3"},
-    {source: "n3", target:"n4", id: "e4"},
-    {source: "n4", target:"n5", id: "e5"},
-  ]
-}
 
 $(function(){
   //variables
   var graph
-  var optArray = []
+  var searchArray = []
 
-  function myGraph(el) {
-    this.init = function (data) {
-      if(data !== undefined){
-        if(data.hasOwnProperty("nodes")){
-          if(Array.isArray(data.nodes)){
-            data.nodes.forEach(function(nodeObj){
-              nodes.push(nodeObj)
-            })
-          }
-        }
-        if(data.hasOwnProperty("links")){
-          if(Array.isArray(data.links)){
-            data.links.forEach(function(linkObj){
-              links.push({"source": findNodeById(linkObj.source), "target": findNodeById(linkObj.target), "id": linkObj.id})
-            })
-          }
-        }
-        // console.log("init")
-        // console.log(nodes)
-        // console.log(links)
-        update()
-      }
-    }
-
-    // Add and remove elements on the graph object
-    this.addNode = function (nodeObj) {
-      nodes.push(nodeObj)
-      update()
-    }
-
-    this.removeNodeById = function (id) {
-      var i = 0
-      var n = findNodeById(id)
-      while (i < links.length) {
-        if ((links[i]['source'] == n.id) || (links[i]['target'] == n.id)) {
-          links.splice(i, 1)
-        }
-        else i++
-      }
-      nodes.splice(findNodeIndex(id), 1)
-      update()
-    }
-
-    this.removeLink = function (source, target) {
-      for (var i = 0; i < links.length; i++) {
-        if (links[i].source.id == source && links[i].target.id == target) {
-          links.splice(i, 1)
-          break
-        }
-      }
-      update()
-    }
-
-    this.removeAllLinks = function () {
-      links.splice(0, links.length)
-      update()
-    }
-
-    this.removeAllNodes = function () {
-      nodes.splice(0, nodes.length)
-      update()
-    }
-
-    this.addLink = function (linkObj) {
-      links.push({"source": findNodeById(linkObj.source), "target": findNodeById(linkObj.target), "id": linkObj.id})
-      update()
-    }
-
-    var findNodeById = function (id) {
-      for (var i in nodes) {
-        if (nodes[i]["id"] === id) return nodes[i];
-      } 
-    }
-    var findLinkById = function (id) {
-      for (var i in links) {
-        if (links[i]["id"] === id) return links[i];
-      } 
-    }
-
-    var findNodeIndex = function (id) {
-      for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].id == id) {
-          return i
-        }
-      }
-    }
+  function Graph(el, graphData) {
 
     // set up the D3 visualisation in the specified element
     var w = $(el).innerWidth(),
-        h = $(el).innerHeight()
-
-    var color = d3.scale.category10()
+        h = $(el).innerHeight(),
+        root = graphData
 
     var vis = d3.select(el)
             .append("div")
@@ -148,62 +119,80 @@ $(function(){
             .append('svg:g')
 
     var force = d3.layout.force()
+                  .charge(-300)
+                  .gravity(0.1)
+                  .size([w, h])
+                  .on("tick", tick)
 
-    var nodes = force.nodes(),
-        links = force.links()
+    var link = vis.selectAll(".link"),
+        node = vis.selectAll(".node");
 
-    var update = function () {
-        var link = vis.selectAll("line")
-                .data(links, function (d) {
-                    return d.source.id + "-" + d.target.id;
-                })
+    // Make it all go
+    update()
 
-        link.enter().append("line")
-                .attr("id", function (d) {
-                    return d.source.id + "-" + d.target.id;
-                })
-                .attr("stroke-width", 10)
-                .attr("class", "link")
+    function update() {
+      var nodes = flatten(root),
+          links = d3.layout.tree().links(nodes);
 
-        link.append("title")
-                .text(function (d) {
-                    return d.id
-                })
-        link.exit().remove()
+      // Restart the force layout.
+      force.nodes(nodes)
+           .links(links)
+           .linkDistance(function(d) {
+              return d.source.id === "root"? 200:80
+            })
+           .start()
 
-        var node = vis.selectAll("g.node")
-                .data(nodes, function (d) {
-                    return d.id;
-                });
+      // Update the links…
+      link = link.data(links, function(d) { return d.target.id; });
 
-        var nodeEnter = node.enter().append("g")
-                .attr("class", "node")
-                .call(force.drag);
+      // Exit any old links.
+      link.exit().remove();
 
-        nodeEnter.append("svg:circle")
-                .attr("r", 12)
-                .attr("id", function (d) {
-                    return d.id;
-                })
-                .attr("class", "nodeStrokeClass")
-                .attr("fill", function(d) { return color(10); })
-                // .style("fill", function (d) {
-                //     return color(d.type)
-                // })
+      // Enter any new links.
+      link.enter().insert("line", ".node")
+          .attr("class", function(d){ return d.source.id === "root" ? "dashlink" : "link" })
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
 
-        nodeEnter.append("svg:text")
-                .attr("class", "textClass")
-                .attr("x", 14)
-                .attr("y", ".31em")
-                .text(function (d) {
-                  return d.name? d.name : d.id
-                });
+      // Update the nodes…
+      node = node.data(nodes, function(d) { return d.id; })
 
-        node.exit().transition("r", 0).remove();
+      // Enter any new nodes.
+      var nodeEnter = node.enter().append("g")
+                      .attr("class", "node")
+                      .call(force.drag)
 
-        force.on("tick", function () {
+      nodeEnter.append("svg:circle")
+          // .attr("cx", function(d) { return d.x; })
+          // .attr("cy", function(d) { return d.y; })
+          .attr("id", function(d) { return d.id; })
+          .attr("r", function(d){ return d.id === "root" ? 50 : 20 })
+          .style("fill", color)
+          .on("click", click)
 
-            node.attr("transform", function (d) {
+      nodeEnter.append("svg:text")
+              .attr("class", "textClass")
+              // .attr("x", 0)
+              // .attr("y", ".31em")
+              .text(function (d) {
+                return d.name? d.name : d.id
+              })
+
+          // Exit any old nodes.
+      node.exit().remove()
+    }
+
+    function tick() {
+      // link.attr("x1", function(d) { return d.source.x; })
+      //     .attr("y1", function(d) { return d.source.y; })
+      //     .attr("x2", function(d) { return d.target.x; })
+      //     .attr("y2", function(d) { return d.target.y; });
+
+      // node.attr("cx", function(d) { return d.x; })
+      //     .attr("cy", function(d) { return d.y; });
+       node.attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
 
@@ -219,94 +208,62 @@ $(function(){
                 .attr("y2", function (d) {
                     return d.target.y;
                 });
-        });
-
-        // Restart the force layout.
-        force.gravity(.01)
-              .charge(-80000)
-              .friction(0)
-              .linkDistance( function(d) { return 100 } )
-              .size([w, h])
-              .start();
     }
 
-    // Make it all go
-    update()
-  }
-
-  function drawGraph(data) {
-    graph = window.graph = new myGraph("#graph")
-    graph.init(data)
-    optArray = data.nodes.map(function(node){
-      return node.name
-    }).sort()
-
-    keepNodesOnTop()
-  }
-
-  drawGraph(graphData)
-
-  // for (var i = 0; i < graphData.nodes.length; i++) {
-  //     optArray.push(graphData.nodes[i].name)
-  // }
-
-  // optArray = optArray.sort()
-
-  // because of the way the network is created, nodes are created first, and links second,
-  // so the lines were on top of the nodes, this just reorders the DOM to put the svg:g on top
-  function keepNodesOnTop() {
-    $(".nodeStrokeClass").each(function( index ) {
-      var gnode = this.parentNode
-      gnode.parentNode.appendChild(gnode)
-    })
-  }
-
-  function addNodes() {
-    d3.select("svg").remove()
-    drawGraph()
-  }
-
-  // Button Event Listener
-  $("#clearBtn").on("click", function(event){
-    event.preventDefault()
-    console.log("clear graph:")
-    $("#graph").empty()
-  })
-
-  var count = graphData.nodes.length
-
-  $("#updateBtn").on("click", function(event){
-    event.preventDefault()
-    count++
-    var nodeId = "n" + count
-    var edgeId = "e" + count
-    graph.addNode({"id": nodeId, "name": nodeId})
-    console.log("n" + count)
-    graph.addLink({"source": "n1", "target": nodeId, "id": edgeId})
-    keepNodesOnTop()
-  })
-
-  var toggle = true
-  $("#refreshGraph").on("click", function(event){
-    event.preventDefault()
-    console.log("refresh graph")
-    $("#graph").empty()
-
-    if(toggle){
-      drawGraph(graphData)
-      toggle = false
-    }else{
-      drawGraph(testData)
-      toggle = true
+    // Color leaf nodes orange, and packages white or blue.
+    function color(d) {
+      return d._children ? "#3182bd" // collapsed package
+          : d.children ? "#c6dbef" // expanded package
+          : "#fd8d3c"; // leaf node
     }
-    keepNodesOnTop()
-    $("#search").autocomplete({
-      source: optArray
-    })
-  })
-  
+
+    // Toggle children on click.
+    function click(d) {
+      if (!d3.event.defaultPrevented) {
+        if (d.children) {
+          d._children = d.children;
+          d.children = null;
+        } else {
+          d.children = d._children;
+          d._children = null;
+        }
+        update();
+      }
+    }
+  }
+
+  function flatten(root) {
+    var nodes = []
+
+    function recurse(node) {
+      if (node.children){
+        node.children.forEach(recurse);
+      }
+      nodes.push(node)
+    }
+
+    recurse(root)
+    return nodes
+  }
+
+  graph = new Graph("#graph", data)
+
+  var temp = flattenNodeName(data)
+  searchArray = temp.sort()
+
+  function flattenNodeName(root){
+    var nodeNames = []
+    function recurse(node) {
+      if (node.children){
+        node.children.forEach(recurse);
+      }
+      nodeNames.push(node.name)
+    }
+    recurse(root)
+    return nodeNames
+  }
   $("#search").autocomplete({
-    source: optArray
+    source: searchArray
   })
   
   $("#search").keypress(function (e) {
@@ -322,22 +279,33 @@ $(function(){
 
   function searchNode() {
     //find the node
-    var selectedVal = document.getElementById('search').value
+    var search = $("#search")
+    var selectedVal = search.val()
     var svg = d3.select("#graph svg")
     var node =svg.selectAll(".node");
 
-    if (selectedVal == "none") {
-        node.style("stroke", "white").style("stroke-width", "1");
+    if (selectedVal == "") {
+      search.css('border-color', '#FF0000')
+      setTimeout(function() {
+        search.css('border-width', "1px")
+        search.css('border-color', '#fff')
+      }, 1000)
+
+    } else if (selectedVal == "none") {
+      node.style("stroke", "white").style("stroke-width", "1");
     } else {
-        var selected = node.filter(function (d, i) {
-            return d.name != selectedVal;
-        });
-        selected.style("opacity", "0");
-        var link = svg.selectAll(".link")
-        link.style("opacity", "0");
-        svg.selectAll(".node, .link").transition()
-            .duration(5000)
-            .style("opacity", 1);
+        if(_.contains(searchArray, selectedVal)){
+          var selected = node.filter(function (d, i) {
+              return d.name != selectedVal;
+          });
+          selected.style("opacity", "0");
+          var link = svg.selectAll(".link, .dashlink")
+          link.style("opacity", "0");
+          svg.selectAll(".node, .link, .dashlink").transition()
+              .duration(3000)
+              .style("opacity", 1);
+        }
+
     }
   }
 })

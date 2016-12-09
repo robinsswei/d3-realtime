@@ -1,3 +1,8 @@
+#wrapper{
+  width: 100%;
+  height: 100%;
+  padding: 50px 100px;
+}
 .dropdown-menu.multi-column {
   width: 600px;
 }
@@ -75,8 +80,16 @@ button {
 }
 
 .link {
-  stroke: #2E2E2E;
+  fill: none;
+  stroke: #9ecae1;
   stroke-width: 2px;
+}
+
+.dashlink {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1px;
+  stroke-dasharray: 2 2;
 }
 
 .node {
@@ -89,6 +102,5 @@ button {
   font-weight: normal;
   stroke-width: .5;
   font-size: 14px;
+  text-align: center;
 }
-
-
